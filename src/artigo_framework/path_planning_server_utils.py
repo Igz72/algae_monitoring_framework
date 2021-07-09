@@ -1,5 +1,5 @@
 import rospy
-from artigo_framework.srv import PathPlanning, PathPlanningResponse
+from artigo_framework.srv import PathPlanningCoverage, PathPlanningCoverageResponse
 from artigo_framework.path_planning import Ponto, Camera, Mapa, PathPlanner
 
 def handle_path_planning(requisicao):
@@ -14,10 +14,10 @@ def handle_path_planning(requisicao):
     caminho                 = PathPlanner(mapa, camera)
     caminho_x, caminho_y    = caminho.coordenadas()
 
-    return PathPlanningResponse(caminho_x, caminho_y)
+    return PathPlanningCoverageResponse(caminho_x, caminho_y)
 
 def path_planning_server():
     rospy.init_node('path_planning_server')
-    s = rospy.Service('path_planning', PathPlanning, handle_path_planning)
+    s = rospy.Service('path_planning', PathPlanningCoverage, handle_path_planning)
     print("Path planning server started")
     rospy.spin()

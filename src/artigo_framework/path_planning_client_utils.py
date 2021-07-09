@@ -1,5 +1,5 @@
 import rospy
-from artigo_framework.srv import PathPlanning
+from artigo_framework.srv import PathPlanningCoverage
 
 def path_planning_client(
     mapa_inicio_x   ,
@@ -12,7 +12,7 @@ def path_planning_client(
     rospy.wait_for_service('path_planning')
 
     try:
-        path_planning = rospy.ServiceProxy('path_planning', PathPlanning)
+        path_planning = rospy.ServiceProxy('path_planning', PathPlanningCoverage)
         resposta = path_planning(
             mapa_inicio_x   ,
             mapa_inicio_y   ,
