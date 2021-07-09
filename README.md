@@ -1,6 +1,8 @@
 # Utilização
 
-	...
+Vídeo ilustrando o funcionamento do serviço de path planning: https://www.youtube.com/watch?v=Q31L-s6_7aA
+
+Vídeo ilustrando o funcionamento do nó master em uma área reduzida de coverage: https://www.youtube.com/watch?v=ipliQb9jSWc
 
 # Desenvolvimento
 ## Criação do pacote ([Creating a ROS Package][criar_pacote])
