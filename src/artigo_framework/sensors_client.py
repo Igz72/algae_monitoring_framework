@@ -58,7 +58,7 @@ class Sensors:
             # # print(flock_coord)
 
         except rospy.ServiceException as e:
-            print("Service call failed: %s"%e)
+            rospy.loginfo("O serviço falhou em identificar algas")
             flock_coord = []
 
     def posicao_atual(self):

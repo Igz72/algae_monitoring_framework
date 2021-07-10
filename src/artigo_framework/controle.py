@@ -95,8 +95,6 @@ class Controle:
         caminho_x_comprimento = len(self.algas_x)
         caminho_y_comprimento = len(self.algas_y)
 
-        print(self.algas_x, self.algas_y)
-
         if caminho_x_comprimento == caminho_y_comprimento > 0:
             self.coverage_posicao = -1 # A próximo coordenada será a inicial
             return True

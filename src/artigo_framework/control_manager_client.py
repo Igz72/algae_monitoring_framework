@@ -19,7 +19,7 @@ def control_manager_client(x, y, z):
         resposta = control_manager(reference=objetivo)
 
         if resposta.success:
-            rospy.loginfo("Enviando o drone para x=", x, " y=", y, " z=", z)
+            rospy.loginfo("Enviando o drone para x=%.1lf y=%.1lf z=%.1lf", x, y, z)
             return True
         else:
             rospy.loginfo("Erro ao comandar o drone")
