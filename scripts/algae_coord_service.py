@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from __future__ import print_function
-from artigo_framework.srv import camera_uav, camera_uavResponse
+from artigo_framework.srv import CameraUAV, CameraUAVResponse
 import rospy
 import numpy as np
 import matplotlib.pyplot as plt
@@ -94,13 +94,13 @@ def handle_goals(req):
         y_list.append(algae_coord[1])
         print(algae_coord)
 
-    return camera_uavResponse(x_list, y_list)
+    return CameraUAVResponse(x_list, y_list)
 
 def add_two_ints():
 	rospy.init_node('algae_to_coord_server') #### Create server node
 
 ### Create service: the first argument is the service name, the second the srv declared on line 3 for variables, the last is the callback
-	s = rospy.Service('algae_to_coord', camera_uav, handle_goals)
+	s = rospy.Service('algae_to_coord', CameraUAV, handle_goals)
 	print("Ready to row.")
 	rospy.spin()
 

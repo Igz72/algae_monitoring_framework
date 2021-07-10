@@ -1,11 +1,12 @@
 import rospy
 import message_filters
-from nav_msgs.msg import Odometry
-from geometry_msgs.msg import PoseWithCovarianceStamped
-from sensor_msgs.msg import Image
-from artigo_framework.srv import camera_uav
 
-class GPSClient:
+from nav_msgs.msg           import Odometry
+from geometry_msgs.msg      import PoseWithCovarianceStamped
+from sensor_msgs.msg        import Image
+from artigo_framework.srv   import CameraUAV
+
+class Sensors:
     def __init__(self, opcao):
         self.x              = 0.0
         self.y              = 0.0
@@ -43,7 +44,7 @@ class GPSClient:
         print('call')
         rospy.wait_for_service('algae_to_coord') ## node service name
         try:
-            img_service = rospy.ServiceProxy('algae_to_coord', camera_uav) ## variable next to the service
+            img_service = rospy.ServiceProxy('algae_to_coord', CameraUAV) ## variable next to the service
             resp = img_service(img, coord)
             output_coord = []
             for i in range(len(resp.x)):

@@ -3,8 +3,9 @@ Adaptado de Grid based sweep planner, de Atsushi Sakai
 GitHub: https://github.com/AtsushiSakai/PythonRobotics
 """
 
-from artigo_framework.path_planning import Ponto, Mapa, Camera, PathPlanner
 import matplotlib.pyplot as plt
+
+from artigo_framework.path_planning import Ponto, Mapa, Camera, PathPlanner
 
 def animacao(
     mapa_inicio_x   ,

@@ -1,6 +1,6 @@
-from artigo_framework.path_planning_client_utils    import path_planning_client
-from artigo_framework.control_manager_client_utils  import control_manager_client
-from artigo_framework.gps_client_utils              import GPSClient
+from artigo_framework.path_planning_client      import path_planning_client
+from artigo_framework.control_manager_client    import control_manager_client
+from artigo_framework.gps_client                import Sensors
 
 class Controle:
     def __init__(
@@ -31,7 +31,7 @@ class Controle:
         self.caminho_y_algas    = []                        # Coordenadas Y das algas
         self.posicao_algas      = 0                         # Posição da alga atual
         self.estado             = 0                         # Estado atual do controlador
-        self.gps                = GPSClient("ground_truth") # Contém informações do GPS
+        self.gps                = Sensors("ground_truth")   # Contém informações dos sensores
 
     def path_planning_coverage(self):
         # Requisição do caminho para o path_planning_server

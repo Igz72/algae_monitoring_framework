@@ -1,7 +1,8 @@
 import rospy
-from geometry_msgs.msg import Point
-from mrs_msgs.msg import Reference
-from mrs_msgs.srv import ReferenceStampedSrv
+
+from geometry_msgs.msg  import Point
+from mrs_msgs.msg       import Reference
+from mrs_msgs.srv       import ReferenceStampedSrv
 
 def control_manager_client(x, y, z):
 

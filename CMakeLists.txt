@@ -58,8 +58,8 @@ catkin_python_setup()
 # Generate services in the 'srv' folder
 add_service_files(
   FILES
-  PathPlanningCoverage.srv
-  camera_uav.srv
+  PathPlanning.srv
+  CameraUAV.srv
 )
 
 ## Generate actions in the 'action' folder

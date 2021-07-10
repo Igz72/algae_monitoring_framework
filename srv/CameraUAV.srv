@@ -1,4 +1,3 @@
-
 sensor_msgs/Image image_sub
 nav_msgs/Odometry GPS_sub
 ---
