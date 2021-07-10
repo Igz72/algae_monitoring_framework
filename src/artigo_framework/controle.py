@@ -105,7 +105,7 @@ class Controle:
             return False
 
     def mover_para_proxima_alga(self):
-        if self.monitoramento_terminou:
+        if self.monitoramento_terminou():
             return False
         else:
             x = self.algas_x[self.algas_posicao]

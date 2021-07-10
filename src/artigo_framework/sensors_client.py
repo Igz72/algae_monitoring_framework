@@ -48,7 +48,7 @@ class Sensors:
             img_service = rospy.ServiceProxy('algae_to_coord', CameraUAV) ## variable next to the service
             resp = img_service(img, coord)
             self.flock_coord_x = resp.x
-            self.flock_coord_x = resp.y
+            self.flock_coord_y = resp.y
             # output_coord = []
             # for i in range(len(resp.x)):
             #     output_coord.append((resp.x[i], resp.y[i]))
