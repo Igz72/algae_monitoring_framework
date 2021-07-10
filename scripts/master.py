@@ -1,4 +1,5 @@
 import rospy
+
 from artigo_framework.controle import Controle
 
 def main():
