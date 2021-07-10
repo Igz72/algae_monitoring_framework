@@ -6,15 +6,15 @@ def main():
     rate = rospy.Rate(1)
 
     controle = Controle(
-         115,   # Coordenada X do canto inferior esquerdo do mapa
-         150,   # Coordenada Y do canto inferior esquerdo do mapa
-          20,   # Largura do mapa
-          20,   # Altura do mapa
+        -125,   # Coordenada X do canto inferior esquerdo do mapa
+         140,   # Coordenada Y do canto inferior esquerdo do mapa
+         250,   # Largura do mapa
+         310,   # Altura do mapa
            5,   # Largura da câmera
            5,   # Altura da câmera
-           5,   # Altura da visão de coverage
-           5,   # Altura da visão de monitoramento
-           3)   # Margem de erro para alcançar os objetivos
+          50,   # Altura da visão de coverage
+          10,   # Altura da visão de monitoramento
+           2)   # Margem de erro para alcançar os objetivos
 
     while not rospy.is_shutdown():
         controle.update_estado()
