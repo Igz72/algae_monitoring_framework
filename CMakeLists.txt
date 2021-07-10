@@ -11,6 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   message_generation
+  sensor_msgs
+  nav_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -57,6 +59,7 @@ catkin_python_setup()
 add_service_files(
   FILES
   PathPlanningCoverage.srv
+  camera_uav.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -70,6 +73,8 @@ add_service_files(
 generate_messages(
   DEPENDENCIES
   std_msgs
+  nav_msgs
+  sensor_msgs
 )
 
 ################################################
@@ -161,6 +166,7 @@ include_directories(
 catkin_install_python(PROGRAMS
   scripts/master.py
   scripts/path_planning_server.py
+  scripts/algae_coord_service.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
