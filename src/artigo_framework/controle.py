@@ -1,6 +1,6 @@
 from artigo_framework.path_planning_client      import path_planning_client
 from artigo_framework.control_manager_client    import control_manager_client
-from artigo_framework.gps_client                import Sensors
+from artigo_framework.sensors_client            import Sensors
 
 class Controle:
     def __init__(
@@ -24,18 +24,18 @@ class Controle:
         self.altura_coverage    = altura_coverage           # Altura da visão no coverage
         self.altura_foto        = altura_foto               # Altura da visão nas fotos das algas
         self.precisao           = precisao                  # Margem de erro para alcançar os objetivos 
-        self.caminho_x_coverage = []                        # Coordenadas X do covarege
-        self.caminho_y_coverage = []                        # Coordenadas Y do covarege
-        self.posicao_coverage   = 0                         # Posição atual no covarege
-        self.caminho_x_algas    = []                        # Coordenadas X das algas
-        self.caminho_y_algas    = []                        # Coordenadas Y das algas
-        self.posicao_algas      = 0                         # Posição da alga atual
+        self.coverage_x         = []                        # Coordenadas X do covarege
+        self.coverage_y         = []                        # Coordenadas Y do covarege
+        self.coverage_posicao   = 0                         # Posição atual no covarege
+        self.algas_x            = []                        # Coordenadas X das algas
+        self.algas_y            = []                        # Coordenadas Y das algas
+        self.algas_posicao      = 0                         # Posição da alga atual
         self.estado             = 0                         # Estado atual do controlador
-        self.gps                = Sensors("ground_truth")   # Contém informações dos sensores
+        self.sensor             = Sensors("ground_truth")   # Contém informações dos sensores
 
     def path_planning_coverage(self):
         # Requisição do caminho para o path_planning_server
-        self.caminho_x_coverage, self.caminho_y_coverage = path_planning_client(
+        self.coverage_x, self.coverage_y = path_planning_client(
             self.mapa_inicio_x   ,
             self.mapa_inicio_y   ,
             self.mapa_largura    ,
@@ -43,11 +43,11 @@ class Controle:
             self.camera_largura  ,
             self.camera_altura   )
 
-        caminho_x_comprimento = len(self.caminho_x_coverage)
-        caminho_y_comprimento = len(self.caminho_y_coverage)
+        caminho_x_comprimento = len(self.coverage_x)
+        caminho_y_comprimento = len(self.coverage_y)
 
         if caminho_x_comprimento == caminho_y_comprimento > 0:
-            self.posicao_coverage = -1 # A próximo coordenada será a inicial
+            self.coverage_posicao = -1 # A próximo coordenada será a inicial
             return True
         else:
             return False
@@ -56,20 +56,20 @@ class Controle:
         if self.coverage_terminou():
             return False
         else:
-            x = self.caminho_x_coverage[self.posicao_coverage]
-            y = self.caminho_y_coverage[self.posicao_coverage]
+            x = self.coverage_x[self.coverage_posicao]
+            y = self.coverage_y[self.coverage_posicao]
             z = self.altura_coverage
 
             # Emitir ordem de movimento para o control_manager
             return control_manager_client(x, y, z)
 
     def destino_alcancado_coverage(self):
-        objetivo_x = self.caminho_x_coverage[self.posicao_coverage]
-        objetivo_y = self.caminho_y_coverage[self.posicao_coverage]
+        objetivo_x = self.coverage_x[self.coverage_posicao]
+        objetivo_y = self.coverage_y[self.coverage_posicao]
         objetivo_z = self.altura_coverage
 
         # Obter a posição atual
-        atual_x, atual_y, atual_z = self.gps.posicao_atual()
+        atual_x, atual_y, atual_z = self.sensor.posicao_atual()
 
         alcancou_x = objetivo_x - self.precisao < atual_x < objetivo_x + self.precisao
         alcancou_y = objetivo_y - self.precisao < atual_y < objetivo_y + self.precisao
@@ -80,36 +80,46 @@ class Controle:
         else:
             return False
 
-    def fotografar_coverage(self):
-        return True
-
     def coverage_terminou(self):
-        if self.posicao_coverage >= len(self.caminho_x_coverage):
+        if self.coverage_posicao >= len(self.coverage_x):
             return True
         else:
             return False
 
     def path_planning_algas(self):
-        return True
+         # Requisição do caminho para o algae_coord_service
+        self.algas_x, self.algas_y = self.sensor.path_planning_algas()
+
+        caminho_x_comprimento = len(self.algas_x)
+        caminho_y_comprimento = len(self.algas_y)
+
+        if caminho_x_comprimento == caminho_y_comprimento > 0:
+            self.coverage_posicao = -1 # A próximo coordenada será a inicial
+            return True
+        elif caminho_x_comprimento == caminho_y_comprimento:
+            self.coverage_posicao = 0
+            return True
+        else:
+            return False
 
     def mover_para_proxima_alga(self):
         if self.monitoramento_terminou:
             return False
         else:
-            x = self.caminho_x_algas[self.posicao_algas]
-            y = self.caminho_y_algas[self.posicao_algas]
+            x = self.algas_x[self.algas_posicao]
+            y = self.algas_y[self.algas_posicao]
             z = self.altura_foto
 
             # Emitir ordem de movimento para o control_manager
             return control_manager_client(x, y, z)
 
     def destino_alcancado_alga(self):
-        objetivo_x = self.caminho_x_algas[self.posicao_algas]
-        objetivo_y = self.caminho_y_algas[self.posicao_algas]
+        objetivo_x = self.algas_x[self.algas_posicao]
+        objetivo_y = self.algas_y[self.algas_posicao]
         objetivo_z = self.altura_foto
 
         # Obter a posição atual
-        atual_x, atual_y, atual_z = self.gps.posicao_atual()
+        atual_x, atual_y, atual_z = self.sensor.posicao_atual()
 
         alcancou_x = objetivo_x - self.precisao < atual_x < objetivo_x + self.precisao
         alcancou_y = objetivo_y - self.precisao < atual_y < objetivo_y + self.precisao
@@ -120,11 +130,8 @@ class Controle:
         else:
             return False
 
-    def fotografar_alga():
-        return True
-
     def monitoramento_terminou(self):
-        if self.posicao_algas >= len(self.caminho_x_algas):
+        if self.algas_posicao >= len(self.algas_x):
             return True
         else:
             return False
@@ -140,13 +147,13 @@ class Controle:
             else:
                 print("Erro ao obter o caminho para o coverage.")
 
-        elif self.estado == 1:
-            self.posicao_coverage += 1
+        elif self.estado == 1: # Tentar avançar no coverage
+            self.coverage_posicao += 1
             if not self.coverage_terminou():
                 self.estado = 2
             else:
                 print("Todos os pontos do coverage foram visitados!")
-                self.estado = 10
+                self.estado = 8
 
         elif self.estado == 2: # Emitir ordem de movimento para a próxima posição no coverage
             print("Emitindo ordem de movimento para a próxima posição no coverage ...")
@@ -160,48 +167,34 @@ class Controle:
             if self.destino_alcancado_coverage():
                 print("Destino alcançado!")
                 self.estado = 4
-
-        elif self.estado == 4: # Capturar imagem no coverage
-            print("Capturando imagem ...")
-            sucesso = self.fotografar_coverage()
-            if sucesso:
-                print("Imagem capturada!")
-                self.estado = 5
         
-        elif self.estado == 5: # Solicitar o caminho para fotografar as algas
+        elif self.estado == 4: # Solicitar o caminho para fotografar as algas
             print("Solicitando o caminho para fotografar as algas ...")
             sucesso = self.path_planning_algas()
             if sucesso:
                 print("Caminho obtido!")
-                self.estado = 6
+                self.estado = 5
 
-        elif self.estado == 6: # Verificar se todas as algas foram fotografadas
-            self.posicao_algas += 1
+        elif self.estado == 5: # Verificar se todas as algas foram fotografadas
+            self.algas_posicao += 1
             if not self.monitoramento_terminou():
-                self.estado = 7
+                self.estado = 6
             else:
                 print("Todas as algas foram fotografadas!")
                 self.estado = 1
 
-        elif self.estado == 7: # Emitir ordem de movimento para visitar a próxima alga
+        elif self.estado == 6: # Emitir ordem de movimento para visitar a próxima alga
             print("Emitindo ordem de movimento para a próxima alga ...")
             sucesso = self.mover_para_proxima_alga()
             if sucesso:
                 print("Ordem enviada!")
-                self.estado = 8
+                self.estado = 7
 
-        elif self.estado == 8: # Aguardar o destino
+        elif self.estado == 7: # Aguardar o destino
             print("Aguardando destino ...")
             if self.destino_alcancado_alga():
                 print("Destino alcançado!")
-                self.estado = 9
-
-        elif self.estado == 9: # Capturar imagem da alga
-            print("Capturando imagem da alga ...")
-            sucesso = self.fotografar_alga()
-            if sucesso:
-                print("Imagem capturada!")
-                self.estado = 6
+                self.estado = 5
 
         else:
             print("Fim da execução!")

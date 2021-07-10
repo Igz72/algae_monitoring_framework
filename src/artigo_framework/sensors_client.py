@@ -41,7 +41,7 @@ class Sensors:
         self.z = data.pose.pose.position.z
     
     def callbackImg_coord(self, img, coord):
-        print('call')
+        # print
         rospy.wait_for_service('algae_to_coord') ## node service name
         try:
             img_service = rospy.ServiceProxy('algae_to_coord', CameraUAV) ## variable next to the service
@@ -52,7 +52,7 @@ class Sensors:
                 #print(resp.y[i])
 
             flock_coord = output_coord
-            print(flock_coord)
+            # print(flock_coord)
 
         except rospy.ServiceException as e:
             print("Service call failed: %s"%e)
@@ -60,3 +60,6 @@ class Sensors:
 
     def posicao_atual(self):
         return self.x, self.y, self.z
+    
+    def path_planning_algas(self):
+        return self.flock_coord
