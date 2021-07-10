@@ -11,7 +11,8 @@ class Sensors:
         self.x              = 0.0
         self.y              = 0.0
         self.z              = 0.0
-        self.flock_coord    = []
+        self.flock_coord_x  = []
+        self.flock_coord_y  = []
 
         if opcao == "global_position":
             rospy.Subscriber(
@@ -46,13 +47,15 @@ class Sensors:
         try:
             img_service = rospy.ServiceProxy('algae_to_coord', CameraUAV) ## variable next to the service
             resp = img_service(img, coord)
-            output_coord = []
-            for i in range(len(resp.x)):
-                output_coord.append((resp.x[i], resp.y[i]))
-                #print(resp.y[i])
+            self.flock_coord_x = resp.x
+            self.flock_coord_x = resp.y
+            # output_coord = []
+            # for i in range(len(resp.x)):
+            #     output_coord.append((resp.x[i], resp.y[i]))
+            #     #print(resp.y[i])
 
-            flock_coord = output_coord
-            # print(flock_coord)
+            # flock_coord = output_coord
+            # # print(flock_coord)
 
         except rospy.ServiceException as e:
             print("Service call failed: %s"%e)
@@ -62,4 +65,4 @@ class Sensors:
         return self.x, self.y, self.z
     
     def path_planning_algas(self):
-        return self.flock_coord
+        return self.flock_coord_x, self.flock_coord_y
