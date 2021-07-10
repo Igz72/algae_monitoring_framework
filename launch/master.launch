@@ -1,0 +1,12 @@
+<launch>
+
+    <node pkg="artigo_framework" type="path_planning_server.py" name="path_planning_server"
+         output="screen"/>
+
+    <node pkg="artigo_framework" type="algae_coord_service.py"  name="algae_coord_service"
+         output="screen"/>
+
+    <node pkg="artigo_framework" type="master.py"               name="master"
+         output="screen"/>
+
+</launch>

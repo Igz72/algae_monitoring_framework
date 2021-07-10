@@ -75,7 +75,7 @@ def algae_detector(img):
 
 ################################ Service #######################################
 def handle_goals(req):
-    print(req)
+    # print(req)
     image_ros = req.image_sub
     location = req.GPS_sub
     bridge = CvBridge()
@@ -92,7 +92,8 @@ def handle_goals(req):
         algae_coord = (round(uav_x+p[0]+116,1), round(uav_y+p[1]+120, 1) )
         x_list.append(algae_coord[0])
         y_list.append(algae_coord[1])
-        print(algae_coord)
+        # print(algae_coord)
+        # print(x_list, y_list)
 
     return CameraUAVResponse(x_list, y_list)
 
@@ -101,7 +102,7 @@ def add_two_ints():
 
 ### Create service: the first argument is the service name, the second the srv declared on line 3 for variables, the last is the callback
 	s = rospy.Service('algae_to_coord', CameraUAV, handle_goals)
-	print("Ready to row.")
+	#print("Ready to row.")
 	rospy.spin()
 
 if __name__ == "__main__":

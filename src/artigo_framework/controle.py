@@ -1,3 +1,5 @@
+import rospy
+
 from artigo_framework.path_planning_client      import path_planning_client
 from artigo_framework.control_manager_client    import control_manager_client
 from artigo_framework.sensors_client            import Sensors
@@ -141,40 +143,39 @@ class Controle:
     def update_estado(self):
 
         if self.estado == 0: # Solicitar o caminho para o coverage
-            print("Solicitando o caminho para o coverage ...")
+            rospy.loginfo("Solicitando o caminho para o coverage")
             sucesso = self.path_planning_coverage()
             if sucesso:
-                print("Caminho para o coverage obtido!")
+                rospy.loginfo("Caminho obtido")
                 self.estado = 1
             else:
-                print("Erro ao obter o caminho para o coverage.")
+                rospy.loginfo("Erro ao obter o caminho para o coverage")
 
         elif self.estado == 1: # Tentar avançar no coverage
             self.coverage_posicao += 1
             if not self.coverage_terminou():
                 self.estado = 2
             else:
-                print("Todos os pontos do coverage foram visitados!")
+                rospy.loginfo("Todos os pontos do coverage foram visitados")
                 self.estado = 8
 
         elif self.estado == 2: # Emitir ordem de movimento para a próxima posição no coverage
-            print("Emitindo ordem de movimento para a próxima posição no coverage ...")
+            rospy.loginfo("Emitindo ordem de movimento para a próxima posição no coverage")
             sucesso = self.mover_para_proxima_posicao_coverage()
             if sucesso:
-                print("Ordem enviada!")
                 self.estado = 3
 
         elif self.estado == 3: # Aguardar o destino
-            print("Aguardando destino ...")
+            rospy.loginfo("Aguardando destino")
             if self.destino_alcancado_coverage():
-                print("Destino alcançado!")
+                rospy.loginfo("Destino alcançado")
                 self.estado = 4
         
         elif self.estado == 4: # Solicitar o caminho para fotografar as algas
-            print("Solicitando o caminho para fotografar as algas ...")
+            rospy.loginfo("Solicitando o caminho para fotografar as algas")
             sucesso = self.path_planning_algas()
             if sucesso:
-                print("Caminho obtido!")
+                rospy.loginfo("Caminho obtido")
                 self.estado = 5
 
         elif self.estado == 5: # Verificar se todas as algas foram fotografadas
@@ -182,22 +183,21 @@ class Controle:
             if not self.monitoramento_terminou():
                 self.estado = 6
             else:
-                print("Todas as algas foram fotografadas!")
+                rospy.loginfo("Todas as algas foram fotografadas")
                 self.estado = 1
 
         elif self.estado == 6: # Emitir ordem de movimento para visitar a próxima alga
-            print("Emitindo ordem de movimento para a próxima alga ...")
+            rospy.loginfo("Emitindo ordem de movimento para a próxima alga")
             sucesso = self.mover_para_proxima_alga()
             if sucesso:
-                print("Ordem enviada!")
                 self.estado = 7
 
         elif self.estado == 7: # Aguardar o destino
-            print("Aguardando destino ...")
+            rospy.loginfo("Aguardando destino")
             if self.destino_alcancado_alga():
-                print("Destino alcançado!")
+                rospy.loginfo("Destino alcançado")
                 self.estado = 5
 
         else:
-            print("Fim da execução!")
+            rospy.loginfo("Fim da execução")
             pass

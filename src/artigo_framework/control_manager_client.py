@@ -19,10 +19,10 @@ def control_manager_client(x, y, z):
         resposta = control_manager(reference=objetivo)
 
         if resposta.success:
-            print("Enviando o drone a x=", x, " y=", y, " z=", z)
+            rospy.loginfo("Enviando o drone para x=", x, " y=", y, " z=", z)
             return True
         else:
-            print("Erro ao comandar o drone")
+            rospy.loginfo("Erro ao comandar o drone")
             return False
 
     except rospy.ServiceException as e:

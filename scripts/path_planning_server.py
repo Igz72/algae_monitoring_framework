@@ -20,7 +20,6 @@ def handle_path_planning(requisicao):
 def path_planning_server():
     rospy.init_node('path_planning_server')
     s = rospy.Service('path_planning', PathPlanning, handle_path_planning)
-    print("Path planning server started")
     rospy.spin()
 
 if __name__ == "__main__":
