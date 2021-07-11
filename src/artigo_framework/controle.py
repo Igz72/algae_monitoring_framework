@@ -34,6 +34,17 @@ class Controle:
         self.algas_posicao      = 0                         # Posição da alga atual
         self.estado             = 0                         # Estado atual do controlador
         self.sensor             = Sensors("ground_truth")   # Contém informações dos sensores
+        self.percorrido_x       = []                        # Coordenada X do caminho percorrido pelo drone
+        self.percorrido_y       = []                        # Coordenada Y do caminho percorrido pelo drone
+
+    def incrementar_caminho_percorrido(self, x, y):
+        self.percorrido_x.append(x)
+        self.percorrido_y.append(y)
+
+    def salvar_caminho_percorrido(self, arquivo):
+        with open(arquivo, "w") as file:
+            for i in range(len(self.percorrido_x)):
+                file.write("x=%6.1lf y=%6.1lf", self.percorrido_x[i], self.percorrido_y[i])
 
     def path_planning_coverage(self):
         # Requisição do caminho para o path_planning_server
@@ -78,6 +89,7 @@ class Controle:
         alcancou_z = objetivo_z - self.precisao < atual_z < objetivo_z + self.precisao
         
         if alcancou_x and alcancou_y and alcancou_z:
+            self.incrementar_caminho_percorrido(atual_x, atual_y)
             return True
         else:
             return False
@@ -128,6 +140,7 @@ class Controle:
         alcancou_z = objetivo_z - self.precisao < atual_z < objetivo_z + self.precisao
         
         if alcancou_x and alcancou_y and alcancou_z:
+            self.incrementar_caminho_percorrido(atual_x, atual_y)
             return True
         else:
             return False
@@ -196,6 +209,11 @@ class Controle:
                 rospy.loginfo("Destino alcançado")
                 self.estado = 5
 
-        else:
+        elif self.estado == 8: # Salvar o caminho
+            self.salvar_caminho_percorrido("caminho.txt")
+            rospy.loginfo("O caminho foi salvo")
             rospy.loginfo("Fim da execução")
+            self.estado = 9
+
+        else:
             pass
