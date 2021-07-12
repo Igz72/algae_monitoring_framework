@@ -10,8 +10,6 @@ def main():
          140,   # Coordenada Y do canto inferior esquerdo do mapa
          250,   # Largura do mapa
          310,   # Altura do mapa
-           5,   # Largura da câmera
-           5,   # Altura da câmera
           50,   # Altura da visão de coverage
           10,   # Altura da visão de monitoramento
            2)   # Margem de erro para alcançar os objetivos

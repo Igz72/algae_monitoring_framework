@@ -11,31 +11,39 @@ class Controle:
         mapa_inicio_y   ,
         mapa_largura    ,
         mapa_altura     ,
-        camera_largura  ,
-        camera_altura   ,
         altura_coverage ,
         altura_foto     ,
         precisao        ):
 
-        self.mapa_inicio_x      = mapa_inicio_x             # Coordenada X do canto inferior esquerdo do mapa
-        self.mapa_inicio_y      = mapa_inicio_y             # Coordenada Y do canto inferior esquerdo do mapa
-        self.mapa_largura       = mapa_largura              # Largura do mapa
-        self.mapa_altura        = mapa_altura               # Altura do mapa
-        self.camera_largura     = camera_largura            # Largura da câmera
-        self.camera_altura      = camera_altura             # Altura da câmera
-        self.altura_coverage    = altura_coverage           # Altura da visão no coverage
-        self.altura_foto        = altura_foto               # Altura da visão nas fotos das algas
-        self.precisao           = precisao                  # Margem de erro para alcançar os objetivos 
-        self.coverage_x         = []                        # Coordenadas X do covarege
-        self.coverage_y         = []                        # Coordenadas Y do covarege
-        self.coverage_posicao   = 0                         # Posição atual no covarege
-        self.algas_x            = []                        # Coordenadas X das algas
-        self.algas_y            = []                        # Coordenadas Y das algas
-        self.algas_posicao      = 0                         # Posição da alga atual
-        self.estado             = 0                         # Estado atual do controlador
-        self.sensor             = Sensors("ground_truth")   # Contém informações dos sensores
-        self.percorrido_x       = []                        # Coordenada X do caminho percorrido pelo drone
-        self.percorrido_y       = []                        # Coordenada Y do caminho percorrido pelo drone
+        self.mapa_inicio_x      = mapa_inicio_x                             # Coordenada X do canto inferior esquerdo do mapa
+        self.mapa_inicio_y      = mapa_inicio_y                             # Coordenada Y do canto inferior esquerdo do mapa
+        self.mapa_largura       = mapa_largura                              # Largura do mapa
+        self.mapa_altura        = mapa_altura                               # Altura do mapa
+        self.altura_coverage    = altura_coverage                           # Altura da visão no coverage
+        self.altura_foto        = altura_foto                               # Altura da visão nas fotos das algas
+        self.precisao           = precisao                                  # Margem de erro para alcançar os objetivos 
+        self.coverage_x         = []                                        # Coordenadas X do covarege
+        self.coverage_y         = []                                        # Coordenadas Y do covarege
+        self.coverage_posicao   = 0                                         # Posição atual no covarege
+        self.algas_x            = []                                        # Coordenadas X das algas
+        self.algas_y            = []                                        # Coordenadas Y das algas
+        self.algas_posicao      = 0                                         # Posição da alga atual
+        self.estado             = 0                                         # Estado atual do controlador
+        self.sensor             = Sensors("ground_truth")                   # Contém informações dos sensores
+        self.percorrido_x       = []                                        # Coordenada X do caminho percorrido pelo drone
+        self.percorrido_y       = []                                        # Coordenada Y do caminho percorrido pelo drone
+        self.camera_largura     = self.dimensoes_camera(altura_coverage)[0] # Largura da câmera
+        self.camera_altura      = self.dimensoes_camera(altura_coverage)[1] # Altura da câmera
+
+    def dimensoes_camera(self, alturaZ):
+        K = [215.6810060961547, 0.0, 376.5, 0.0, 215.6810060961547, 240.5, 0.0, 0.0, 1.0]
+        baseTerrestreAltura = 0.000009 # 0.5
+        Z = alturaZ - baseTerrestreAltura # Distancia do solo
+        dX = (0 - K[2]) * Z / K[0]
+        dY = (0 - K[5]) * Z / K[4]
+        dist = (0 - dX, 0 - dY)
+
+        return 2 * dist[0], 2 * dist[1]
 
     def incrementar_caminho_percorrido(self, x, y):
         self.percorrido_x.append(x)
@@ -154,6 +162,7 @@ class Controle:
     def update_estado(self):
 
         if self.estado == 0: # Solicitar o caminho para o coverage
+            rospy.loginfo("Dimensão das imagens capturadas pela câmera: %.1lf m X %.1lf m", self.camera_largura, self.camera_altura)
             rospy.loginfo("Solicitando o caminho para o coverage")
             sucesso = self.path_planning_coverage()
             if sucesso:
