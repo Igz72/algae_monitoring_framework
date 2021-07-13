@@ -67,10 +67,11 @@ def algae_detector(img):
     contours, hierarchy = cv2.findContours(img_binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     #_, contours, _ = cv2.findContours(img2, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_TC89_L1)
     centres = []
-    for i in range(len(contours)):
-        moments = cv2.moments(contours[i])
-        centres.append((int(moments['m10']/moments['m00']), int(moments['m01']/moments['m00'])))
-    #print(centres)
+    if len(contours)>0:
+        for i in range(len(contours)):
+            moments = cv2.moments(contours[i])
+            centres.append((int(moments['m10']/moments['m00']), int(moments['m01']/moments['m00'])))
+    
     return centres
 
 ################################ Service #######################################
