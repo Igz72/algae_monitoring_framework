@@ -90,7 +90,7 @@ def handle_goals(req):
     y_list = []
     for i in classified:
         p = stationary_camera_transform((i[0], 480-i[1]), uav_z)
-        algae_coord = (round(uav_x+p[0],1), round(uav_y+p[1], 1) )
+        algae_coord = (round(uav_x+p[0]+116,1), round(uav_y+p[1]+120, 1) )
         x_list.append(algae_coord[0])
         y_list.append(algae_coord[1])
         # print(algae_coord)
