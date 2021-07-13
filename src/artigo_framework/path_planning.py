@@ -1,3 +1,4 @@
+import math
 import numpy as np
 
 class Ponto:
@@ -77,10 +78,28 @@ class PathPlanner:
             caminho_ajustado.append(centro)
             
         self.lista = caminho_ajustado
+    
+    def artigo(self):
+        self.lista = []
+
+        N = math.ceil(self.mapa.largura / self.camera.largura)
+        M = math.ceil(self.mapa.altura / self.camera.altura)
+
+        for j in range(M):
+            for i in range(N):
+
+                if j % 2 != 0:
+                    i = N - 1 - i
+                
+                x = self.mapa.inicio.x + self.camera.largura  * (i + 0.5)
+                y = self.mapa.inicio.y + self.camera.altura   * (j + 0.5)
+
+                self.lista.append(Ponto(x, y))
 
     def caminho(self):
-        self.montarMosaico()
-        self.ajustarCentro()
+        # self.montarMosaico()
+        # self.ajustarCentro()
+        self.artigo()
         return self.lista
 
     def coordenadas(self):
@@ -101,5 +120,5 @@ if __name__ == '__main__':
     caminho = path.caminho()
     coordenadas_x, coordenadas_y = path.coordenadas()
     
-    print(coordenadas_x)
-    print(coordenadas_y)
+    # print(coordenadas_x)
+    # print(coordenadas_y)

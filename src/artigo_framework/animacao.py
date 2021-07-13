@@ -5,7 +5,7 @@ GitHub: https://github.com/AtsushiSakai/PythonRobotics
 
 import matplotlib.pyplot as plt
 
-from artigo_framework.path_planning import Ponto, Mapa, Camera, PathPlanner
+from path_planning import Ponto, Mapa, Camera, PathPlanner
 
 def animacao(
     mapa_inicio_x   ,
@@ -27,20 +27,21 @@ def animacao(
     for ponto in caminho:
         camera_x, camera_y = camera.coordenadas(ponto)
 
-        plt.cla()
+        # plt.cla()
         plt.gcf().canvas.mpl_connect(
             'key_release_event',
             lambda event: [exit(0) if event.key == 'escape' else None])
 
-        plt.plot(mapa_x, mapa_y, "-xb")
         plt.plot(caminho_x, caminho_y, "-r")
         plt.plot(ponto.x, ponto.y, "or")
         plt.plot(camera_x, camera_y, "r")
+        plt.plot(mapa_x, mapa_y, "-xb")
         plt.axis("equal")
         plt.grid(True)
-        plt.pause(0.4)
+        plt.pause(0.2)
 
+    plt.pause(10)
     plt.close()
 
 if __name__ == '__main__':
-    animacao(0.0, 0.0, 100.0, 50.0, 10.0, 10.0)
+    animacao(0, 0, 100, 50, 20, 10)
