@@ -12,7 +12,7 @@ def main():
          310,   # Altura do mapa
           50,   # Altura da visão de coverage
           10,   # Altura da visão de monitoramento
-           2)   # Margem de erro para alcançar os objetivos
+           4)   # Margem de erro para alcançar os objetivos
 
     while not rospy.is_shutdown():
         controle.update_estado()
