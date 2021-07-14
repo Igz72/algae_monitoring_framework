@@ -25,23 +25,25 @@ class Controle:
         self.coverage_x         = []                                        # Coordenadas X do covarege
         self.coverage_y         = []                                        # Coordenadas Y do covarege
         self.coverage_posicao   = 0                                         # Posição atual no covarege
-        self.algas_x            = []                                        # Coordenadas X das algas
-        self.algas_y            = []                                        # Coordenadas Y das algas
-        self.algas_posicao      = 0                                         # Posição da alga atual
         self.estado             = 0                                         # Estado atual do controlador
         self.sensors            = Sensors("ground_truth", altura_coverage)  # Contém informações dos sensores
         self.percorrido_x       = []                                        # Coordenada X do caminho percorrido pelo drone
         self.percorrido_y       = []                                        # Coordenada Y do caminho percorrido pelo drone
 
+        rospy.loginfo(
+            "Dimensão das imagens capturadas pela câmera: %.1lf m X %.1lf m",
+            self.sensors.camera_largura()                                   ,
+            self.sensors.camera_altura()                                    )
+
     def path_planning_coverage(self):
         # Requisição do caminho para o path_planning_server
         self.coverage_x, self.coverage_y = path_planning_client(
-            self.mapa_inicio_x          ,
-            self.mapa_inicio_y          ,
-            self.mapa_largura           ,
-            self.mapa_altura            ,
-            self.sensors.camera_largura  ,
-            self.sensors.camera_altura   )
+            self.mapa_inicio_x              ,
+            self.mapa_inicio_y              ,
+            self.mapa_largura               ,
+            self.mapa_altura                ,
+            self.sensors.camera_largura()   ,
+            self.sensors.camera_altura()    )
 
         caminho_x_comprimento = len(self.coverage_x)
         caminho_y_comprimento = len(self.coverage_y)
@@ -88,50 +90,17 @@ class Controle:
 
     def path_planning_algas(self):
          # Requisição do caminho para o algae_coord_service
-        self.algas_x, self.algas_y = self.sensors.path_planning_algas()
+        algas_x, algas_y = self.sensors.path_planning_algas()
 
-        caminho_x_comprimento = len(self.algas_x)
-        caminho_y_comprimento = len(self.algas_y)
+        caminho_x_comprimento = len(algas_x)
+        caminho_y_comprimento = len(algas_y)
 
         if caminho_x_comprimento == caminho_y_comprimento > 0:
-            self.algas_posicao = -1 # A próximo coordenada será a inicial
+            for i in caminho_x_comprimento:
+                rospy.loginfo("Coordenada %d: %6.1lf %6.1lf %6.1lf",
+                    i+1, algas_x[i], algas_y[i], self.altura_foto)
             return True
         elif caminho_x_comprimento == caminho_y_comprimento:
-            self.algas_posicao = 0
-            return True
-        else:
-            return False
-
-    def mover_para_proxima_alga(self):
-        if self.monitoramento_terminou():
-            return False
-        else:
-            x = self.algas_x[self.algas_posicao]
-            y = self.algas_y[self.algas_posicao]
-            z = self.altura_foto
-
-            # Emitir ordem de movimento para o control_manager
-            return control_manager_client(x, y, z)
-
-    def destino_alcancado_alga(self):
-        objetivo_x = self.algas_x[self.algas_posicao]
-        objetivo_y = self.algas_y[self.algas_posicao]
-        objetivo_z = self.altura_foto
-
-        # Obter a posição atual
-        atual_x, atual_y, atual_z = self.sensors.posicao_atual()
-
-        alcancou_x = objetivo_x - self.precisao < atual_x < objetivo_x + self.precisao
-        alcancou_y = objetivo_y - self.precisao < atual_y < objetivo_y + self.precisao
-        alcancou_z = objetivo_z - self.precisao < atual_z < objetivo_z + self.precisao
-        
-        if alcancou_x and alcancou_y and alcancou_z:
-            return True
-        else:
-            return False
-
-    def monitoramento_terminou(self):
-        if self.algas_posicao >= len(self.algas_x):
             return True
         else:
             return False
@@ -139,7 +108,6 @@ class Controle:
     def update_estado(self):
 
         if self.estado == 0: # Solicitar o caminho para o coverage
-            rospy.loginfo("Dimensão das imagens capturadas pela câmera: %.1lf m X %.1lf m", self.camera_largura, self.camera_altura)
             rospy.loginfo("Solicitando o caminho para o coverage")
             sucesso = self.path_planning_coverage()
             if sucesso:
@@ -151,10 +119,11 @@ class Controle:
         elif self.estado == 1: # Tentar avançar no coverage
             self.coverage_posicao += 1
             if not self.coverage_terminou():
+                rospy.loginfo("Avançando para a próxima posição do coverage")
                 self.estado = 2
             else:
                 rospy.loginfo("Todos os pontos do coverage foram visitados")
-                self.estado = 8
+                self.estado = 5
 
         elif self.estado == 2: # Emitir ordem de movimento para a próxima posição no coverage
             rospy.loginfo("Emitindo ordem de movimento para a próxima posição no coverage")
@@ -163,8 +132,9 @@ class Controle:
                 self.estado = 3
 
         elif self.estado == 3: # Aguardar o destino
-            rospy.loginfo("Aguardando destino")
-            if self.destino_alcancado_coverage():
+            if not self.destino_alcancado_coverage():
+                rospy.loginfo("Aguardando destino")
+            else:
                 rospy.loginfo("Destino alcançado")
                 self.estado = 4
         
@@ -173,31 +143,11 @@ class Controle:
             sucesso = self.path_planning_algas()
             if sucesso:
                 rospy.loginfo("Caminho obtido")
-                self.estado = 5
-
-        elif self.estado == 5: # Verificar se todas as algas foram fotografadas
-            self.algas_posicao += 1
-            if not self.monitoramento_terminou():
-                self.estado = 6
-            else:
-                rospy.loginfo("Todas as algas foram fotografadas")
                 self.estado = 1
 
-        elif self.estado == 6: # Emitir ordem de movimento para visitar a próxima alga
-            rospy.loginfo("Emitindo ordem de movimento para a próxima alga")
-            sucesso = self.mover_para_proxima_alga()
-            if sucesso:
-                self.estado = 7
-
-        elif self.estado == 7: # Aguardar o destino
-            rospy.loginfo("Aguardando destino")
-            if self.destino_alcancado_alga():
-                rospy.loginfo("Destino alcançado")
-                self.estado = 5
-
-        elif self.estado == 8: # Salvar o caminho
+        elif self.estado == 5:
             rospy.loginfo("Fim da execução")
-            self.estado = 9
+            self.estado = 6
 
         else:
             pass
