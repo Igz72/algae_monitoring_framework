@@ -78,19 +78,18 @@ def algae_detector(img):
 def handle_goals(req):
     # print(req)
     image_ros = req.image_sub
-    location = req.GPS_sub
     bridge = CvBridge()
     image = bridge.imgmsg_to_cv2(image_ros, desired_encoding='passthrough')
     classified = algae_detector(image)
-    uav_z = location.pose.pose.position.z
-    uav_x = location.pose.pose.position.x
-    uav_y = location.pose.pose.position.y
+    uav_z = req.gps_z
+    uav_x = req.gps_x
+    uav_y = req.gps_y
     #pub.publish(bridge.cv2_to_imgmsg(classified))
     x_list = []
     y_list = []
     for i in classified:
         p = stationary_camera_transform((i[0], 480-i[1]), uav_z)
-        algae_coord = (round(uav_x+p[0]+116,1), round(uav_y+p[1]+120, 1) )
+        algae_coord = (round(uav_x+p[0],1), round(uav_y+p[1], 1) )
         x_list.append(algae_coord[0])
         y_list.append(algae_coord[1])
         # print(algae_coord)

@@ -12,7 +12,9 @@ class Sensors:
         self.y              = 0.0
         self.z              = 0.0
         self.imagem         = Image()
-        self.coordenada     = Odometry()
+        self.coordenada_x   = 0.0
+        self.coordenada_y   = 0.0
+        self.coordenada_z   = 0.0
         self.visao_largura  = 0.0
         self.visao_altura   = 0.0
 
@@ -40,7 +42,9 @@ class Sensors:
     
     def img_coord_callback(self, img, coord):
         self.imagem = img
-        self.coordenada = coord
+        self.coordenada_x = coord.pose.pose.position.x
+        self.coordenada_y = coord.pose.pose.position.y
+        self.coordenada_z = coord.pose.pose.position.z
 
     def calcular_visao_camera(self, altura_camera):
         K = [215.6810060961547, 0.0, 376.5, 0.0, 215.6810060961547, 240.5, 0.0, 0.0, 1.0]
@@ -64,7 +68,7 @@ class Sensors:
         rospy.wait_for_service('algae_to_coord')
         try:
             img_service = rospy.ServiceProxy('algae_to_coord', CameraUAV)
-            resp = img_service(self.imagem, self.coordenada)
+            resp = img_service(self.imagem, self.coordenada_x, self.coordenada_y, self.coordenada_z)
 
         except rospy.ServiceException as e:
             rospy.loginfo("O serviço falhou em identificar algas")
