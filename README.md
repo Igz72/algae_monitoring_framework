@@ -27,7 +27,7 @@ O nome do arquivo criado deve ser adicionado em [CMakeList.txt][CMakeList_pacote
 
 	add_service_files(
 	  FILES
-	  PathPlanningCoverage.srv
+	  PathPlanning.srv
 	)
 
 ## Criação de módulos e nós em Python ([Installing Python scripts and modules][modulos_python])
