@@ -49,6 +49,9 @@ class Controle:
         caminho_y_comprimento = len(self.coverage_y)
 
         if caminho_x_comprimento == caminho_y_comprimento > 0:
+            for i in range(caminho_x_comprimento):
+                rospy.loginfo("Coordenada %d: %6.1lf %6.1lf %6.1lf",
+                    i+1, self.coverage_x[i], self.coverage_y[i], self.altura_coverage)
             self.coverage_posicao = -1 # A próximo coordenada será a inicial
             return True
         else:
@@ -96,11 +99,12 @@ class Controle:
         caminho_y_comprimento = len(algas_y)
 
         if caminho_x_comprimento == caminho_y_comprimento > 0:
-            for i in caminho_x_comprimento:
-                rospy.loginfo("Coordenada %d: %6.1lf %6.1lf %6.1lf",
+            for i in range(caminho_x_comprimento):
+                rospy.loginfo("Alga %d: %6.1lf %6.1lf %6.1lf",
                     i+1, algas_x[i], algas_y[i], self.altura_foto)
             return True
         elif caminho_x_comprimento == caminho_y_comprimento:
+            rospy.loginfo("Algas não foram identificadas")
             return True
         else:
             return False
@@ -111,7 +115,6 @@ class Controle:
             rospy.loginfo("Solicitando o caminho para o coverage")
             sucesso = self.path_planning_coverage()
             if sucesso:
-                rospy.loginfo("Caminho obtido")
                 self.estado = 1
             else:
                 rospy.loginfo("Erro ao obter o caminho para o coverage")
@@ -119,14 +122,13 @@ class Controle:
         elif self.estado == 1: # Tentar avançar no coverage
             self.coverage_posicao += 1
             if not self.coverage_terminou():
-                rospy.loginfo("Avançando para a próxima posição do coverage")
+                rospy.loginfo("Avançando para a posição %d do coverage", self.coverage_posicao+1)
                 self.estado = 2
             else:
-                rospy.loginfo("Todos os pontos do coverage foram visitados")
+                rospy.loginfo("Todas as coordenadas do coverage foram visitadas")
                 self.estado = 5
 
         elif self.estado == 2: # Emitir ordem de movimento para a próxima posição no coverage
-            rospy.loginfo("Emitindo ordem de movimento para a próxima posição no coverage")
             sucesso = self.mover_para_proxima_posicao_coverage()
             if sucesso:
                 self.estado = 3
@@ -142,7 +144,6 @@ class Controle:
             rospy.loginfo("Solicitando o caminho para fotografar as algas")
             sucesso = self.path_planning_algas()
             if sucesso:
-                rospy.loginfo("Caminho obtido")
                 self.estado = 1
 
         elif self.estado == 5:
