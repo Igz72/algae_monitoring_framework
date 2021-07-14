@@ -29,21 +29,9 @@ class Controle:
         self.algas_y            = []                                        # Coordenadas Y das algas
         self.algas_posicao      = 0                                         # Posição da alga atual
         self.estado             = 0                                         # Estado atual do controlador
-        self.sensor             = Sensors("ground_truth")                   # Contém informações dos sensores
+        self.sensors            = Sensors("ground_truth", altura_coverage)  # Contém informações dos sensores
         self.percorrido_x       = []                                        # Coordenada X do caminho percorrido pelo drone
         self.percorrido_y       = []                                        # Coordenada Y do caminho percorrido pelo drone
-        self.camera_largura     = self.dimensoes_camera(altura_coverage)[0] # Largura da câmera
-        self.camera_altura      = self.dimensoes_camera(altura_coverage)[1] # Altura da câmera
-
-    def dimensoes_camera(self, alturaZ):
-        K = [215.6810060961547, 0.0, 376.5, 0.0, 215.6810060961547, 240.5, 0.0, 0.0, 1.0]
-        baseTerrestreAltura = 0.000009 # 0.5
-        Z = alturaZ - baseTerrestreAltura # Distancia do solo
-        dX = (0 - K[2]) * Z / K[0]
-        dY = (0 - K[5]) * Z / K[4]
-        dist = (0 - dX, 0 - dY)
-
-        return 2 * dist[0], 2 * dist[1]
 
     def incrementar_caminho_percorrido(self, x, y):
         self.percorrido_x.append(x)
@@ -57,12 +45,12 @@ class Controle:
     def path_planning_coverage(self):
         # Requisição do caminho para o path_planning_server
         self.coverage_x, self.coverage_y = path_planning_client(
-            self.mapa_inicio_x   ,
-            self.mapa_inicio_y   ,
-            self.mapa_largura    ,
-            self.mapa_altura     ,
-            self.camera_largura  ,
-            self.camera_altura   )
+            self.mapa_inicio_x          ,
+            self.mapa_inicio_y          ,
+            self.mapa_largura           ,
+            self.mapa_altura            ,
+            self.sensors.camera_largura  ,
+            self.sensors.camera_altura   )
 
         caminho_x_comprimento = len(self.coverage_x)
         caminho_y_comprimento = len(self.coverage_y)
@@ -90,7 +78,7 @@ class Controle:
         objetivo_z = self.altura_coverage
 
         # Obter a posição atual
-        atual_x, atual_y, atual_z = self.sensor.posicao_atual()
+        atual_x, atual_y, atual_z = self.sensors.posicao_atual()
 
         alcancou_x = objetivo_x - self.precisao < atual_x < objetivo_x + self.precisao
         alcancou_y = objetivo_y - self.precisao < atual_y < objetivo_y + self.precisao
@@ -110,7 +98,7 @@ class Controle:
 
     def path_planning_algas(self):
          # Requisição do caminho para o algae_coord_service
-        self.algas_x, self.algas_y = self.sensor.path_planning_algas()
+        self.algas_x, self.algas_y = self.sensors.path_planning_algas()
 
         caminho_x_comprimento = len(self.algas_x)
         caminho_y_comprimento = len(self.algas_y)
@@ -141,7 +129,7 @@ class Controle:
         objetivo_z = self.altura_foto
 
         # Obter a posição atual
-        atual_x, atual_y, atual_z = self.sensor.posicao_atual()
+        atual_x, atual_y, atual_z = self.sensors.posicao_atual()
 
         alcancou_x = objetivo_x - self.precisao < atual_x < objetivo_x + self.precisao
         alcancou_y = objetivo_y - self.precisao < atual_y < objetivo_y + self.precisao
