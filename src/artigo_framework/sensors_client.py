@@ -26,7 +26,7 @@ class Sensors:
             rospy.Subscriber("/uav1/ground_truth_pose", PoseWithCovarianceStamped, self.ground_truth_callback)
 
         image_sub   = message_filters.Subscriber('/uav1/bluefox_optflow/image_raw', Image)
-        GPS_sub     = message_filters.Subscriber('/uav1/mavros/global_position/local', Odometry)
+        GPS_sub     = message_filters.Subscriber('/uav1/ground_truth_pose', PoseWithCovarianceStamped)
         ts          = message_filters.ApproximateTimeSynchronizer([image_sub, GPS_sub], 10, 0.05)
         ts.registerCallback(self.img_coord_callback)
 
