@@ -34,10 +34,21 @@ def stationary_camera_transform(point, alturaZ ):
 def algae_detector(img):
     #print(img)
     img = img[:,:,[0,1,2]]
-    img_ch0 = img[:,:,0]
+    # print(img.shape)
+    #img_ch0 = img[:,:,0]
+    img_r = img[:, :, 0]
+    img_g = img[:, :, 1]
+    img_b = img[:, :, 2]
+
 #thr
-    min_thr = 20
-    _, thr = cv2.threshold(img_ch0, min_thr, 255, cv2.THRESH_BINARY)
+    #min_thr = 20
+    #_, thr = cv2.threshold(img_ch0, min_thr, 255, cv2.THRESH_BINARY)
+
+    min_thr_r = 20
+    min_thr_g = 120
+    _, thr_g = cv2.threshold(img_r, min_thr_r, 1, cv2.THRESH_BINARY)
+    _, thr_r = cv2.threshold(img_g, min_thr_g, 1, cv2.THRESH_BINARY)
+    thr = np.multiply(thr_g, thr_r)*255
 #blur
     size_b = 5
     kernel_blur = np.ones((size_b, size_b),np.float32)/size_b*size_b
@@ -52,26 +63,28 @@ def algae_detector(img):
     img_pixels = thr.shape[0]*thr.shape[1]
     if (thr.sum() >= mostTrue) or (thr.sum() <= mostFalse):
         #print("Is the world blue?")
-        B_sum = img[:,:,2].sum()
-        G_sum = img[:,:,1].sum()
-        R_sum = img[:,:,0].sum()
+        B_sum = img_b.sum()
+        G_sum = img_g.sum()
+        R_sum = img_r.sum()
 
         red_limit = 60
         blue_limit = 150
         if (R_sum < red_limit*thr.shape[0]*thr.shape[1]) and (B_sum > blue_limit*thr.shape[0]*thr.shape[1]) :
             #print("yes, it is!")
             img_binary = np.zeros(thr.shape)
-
-    img2 = cv2.cvtColor(img_binary, cv2.COLOR_GRAY2RGB)
-    #print(img2.shape)
-    contours, hierarchy = cv2.findContours(img_binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    #_, contours, _ = cv2.findContours(img2, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_TC89_L1)
-    centres = []
-    if len(contours)>0:
+            return[]
+    try:
+        img2 = cv2.cvtColor(img_binary, cv2.COLOR_GRAY2RGB)
+        #print(img2.shape)
+        contours, hierarchy = cv2.findContours(img_binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        #_, contours, _ = cv2.findContours(img2, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_TC89_L1)
+        centres = []
         for i in range(len(contours)):
             moments = cv2.moments(contours[i])
             centres.append((int(moments['m10']/moments['m00']), int(moments['m01']/moments['m00'])))
-    
+        #print(centres)
+    except:
+        centres = []
     return centres
 
 ################################ Service #######################################
