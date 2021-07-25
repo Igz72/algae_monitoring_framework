@@ -164,9 +164,9 @@ include_directories(
 # Mark executable scripts (Python etc.) for installation
 # in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
-  scripts/master.py
-  scripts/path_planning_server.py
-  scripts/algae_coord_service.py
+  scripts/algae_detector_server
+  scripts/coverage_server
+  scripts/master_node
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

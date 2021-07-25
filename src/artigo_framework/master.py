@@ -1,8 +1,10 @@
+#!/usr/bin/python3
 import rospy
-
 from artigo_framework.controle import Controle
 
-def main():
+def master_node():
+    rospy.init_node("master_node")
+
     rate = rospy.Rate(1)
 
     controle = Controle(
@@ -14,14 +16,9 @@ def main():
           10,   # Altura da visão de monitoramento
            4)   # Margem de erro para alcançar os objetivos
 
-    while not rospy.is_shutdown():
-        controle.update_estado()
-        rate.sleep()
-
-if __name__ == "__main__":
-    rospy.init_node("Master")
-
     try:
-        main()
+        while not rospy.is_shutdown():
+            controle.update_estado()
+            rate.sleep()
     except rospy.ROSInterruptException:
         pass

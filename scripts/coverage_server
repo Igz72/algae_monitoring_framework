@@ -1,0 +1,4 @@
+#!/usr/bin/python3
+from artigo_framework.coverage_service import coverage_server
+if __name__ == "__main__":
+	coverage_server()

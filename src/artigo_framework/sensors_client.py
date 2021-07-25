@@ -65,9 +65,9 @@ class Sensors:
         return self.x, self.y, self.z
     
     def path_planning_algas(self):
-        rospy.wait_for_service('algae_to_coord')
+        rospy.wait_for_service('algae_detector')
         try:
-            img_service = rospy.ServiceProxy('algae_to_coord', CameraUAV)
+            img_service = rospy.ServiceProxy('algae_detector', CameraUAV)
             resp = img_service(self.imagem, self.coordenada_x, self.coordenada_y, self.coordenada_z)
 
         except rospy.ServiceException as e:

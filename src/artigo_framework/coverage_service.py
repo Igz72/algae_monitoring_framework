@@ -3,7 +3,7 @@ import rospy
 from artigo_framework.srv           import PathPlanning, PathPlanningResponse
 from artigo_framework.path_planning import Ponto, Camera, Mapa, PathPlanner
 
-def handle_path_planning(requisicao):
+def handle_coverage(requisicao):
     mapa_inicio             = Ponto(requisicao.mapa_inicio_x, requisicao.mapa_inicio_y)
     mapa_largura            = requisicao.mapa_largura
     mapa_altura             = requisicao.mapa_altura
@@ -17,10 +17,7 @@ def handle_path_planning(requisicao):
 
     return PathPlanningResponse(caminho_x, caminho_y)
 
-def path_planning_server():
-    rospy.init_node('path_planning_server')
-    s = rospy.Service('path_planning', PathPlanning, handle_path_planning)
+def coverage_server():
+    rospy.init_node('coverage_server')
+    s = rospy.Service('coverage', PathPlanning, handle_coverage)
     rospy.spin()
-
-if __name__ == "__main__":
-    path_planning_server()

@@ -10,10 +10,10 @@ def path_planning_client(
     camera_largura  ,
     camera_altura   ):
 
-    rospy.wait_for_service('path_planning')
+    rospy.wait_for_service('coverage')
 
     try:
-        path_planning = rospy.ServiceProxy('path_planning', PathPlanning)
+        path_planning = rospy.ServiceProxy('coverage', PathPlanning)
         resposta = path_planning(
             mapa_inicio_x   ,
             mapa_inicio_y   ,

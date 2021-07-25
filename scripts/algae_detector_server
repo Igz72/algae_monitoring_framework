@@ -1,0 +1,4 @@
+#!/usr/bin/python3
+from artigo_framework.algae_detector_service import algae_detector_server
+if __name__ == "__main__":
+	algae_detector_server()

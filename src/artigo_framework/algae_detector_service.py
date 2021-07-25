@@ -110,13 +110,13 @@ def handle_goals(req):
 
     return CameraUAVResponse(x_list, y_list)
 
-def add_two_ints():
-	rospy.init_node('algae_to_coord_server') #### Create server node
+def algae_detector_server():
+	rospy.init_node('algae_detector_server') #### Create server node
 
 ### Create service: the first argument is the service name, the second the srv declared on line 3 for variables, the last is the callback
-	s = rospy.Service('algae_to_coord', CameraUAV, handle_goals)
+	s = rospy.Service('algae_detector', CameraUAV, handle_goals)
 	#print("Ready to row.")
 	rospy.spin()
 
 if __name__ == "__main__":
-	add_two_ints()
+	algae_detector_server()
