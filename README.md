@@ -10,7 +10,7 @@ O pacote [artigo_framework][artigo_framework] foi criado utilizando o comando:
 
 	catkin_create_pkg artigo_framework std_msgs rospy
 
-## Criação de serviços ([Creating a ROS msg and srv][criar_pacote])
+## Criação de serviços ([Creating a ROS msg and srv][criar_servico])
 O arquivo [srv/PathPlanningCoverage.srv][path_planning_coverage] foi criado como base para a criação do serviço que calcula o _path planning_ para o _coverage_. As variáveis utilizadas pelo _request_ e _response_ são separadas pelo delimitador `---`.
 
 	float64 mapa_inicio_x
