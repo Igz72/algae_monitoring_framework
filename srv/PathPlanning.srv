@@ -1,9 +1,0 @@
-float64 mapa_inicio_x
-float64 mapa_inicio_y
-float64 mapa_largura
-float64 mapa_altura
-float64 camera_largura
-float64 camera_altura
----
-float64[] caminho_x
-float64[] caminho_y

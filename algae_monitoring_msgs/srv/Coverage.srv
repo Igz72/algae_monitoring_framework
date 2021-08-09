@@ -1,0 +1,5 @@
+algae_monitoring_msgs/Coordinate2D start
+algae_monitoring_msgs/Rectangle area
+algae_monitoring_msgs/Rectangle camera
+---
+algae_monitoring_msgs/Coordinate2D[] path

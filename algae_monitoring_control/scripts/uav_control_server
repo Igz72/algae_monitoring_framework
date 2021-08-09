@@ -1,0 +1,7 @@
+#!/usr/bin/python3
+
+from algae_monitoring_control.uav_control_action import uav_control_server
+
+
+if __name__ == "__main__":
+	uav_control_server()

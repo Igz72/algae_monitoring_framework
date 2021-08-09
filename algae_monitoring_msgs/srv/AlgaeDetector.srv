@@ -1,0 +1,4 @@
+algae_monitoring_msgs/Coordinate3D position
+sensor_msgs/Image image
+---
+algae_monitoring_msgs/Coordinate2D[] coordinates

@@ -1,0 +1,15 @@
+<launch>
+
+    <node pkg="algae_monitoring_detector" type="algae_detector_server" name="detector"
+         output="screen"/>
+
+    <node pkg="algae_monitoring_coverage" type="coverage_server" name="coverage"
+         output="screen"/>
+
+    <node pkg="algae_monitoring_control" type="uav_control_server" name="control"
+         output="screen"/>
+
+    <node pkg="algae_monitoring_master" type="master_node" name="master"
+         output="screen"/>
+
+</launch>

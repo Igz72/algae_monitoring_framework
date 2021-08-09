@@ -1,1 +1,5 @@
-src/artigo_framework/__pycache__
+.vscode
+algae_monitoring_control/src/algae_monitoring_control/__pycache__
+algae_monitoring_coverage/src/algae_monitoring_coverage/__pycache__
+algae_monitoring_detector/src/algae_monitoring_detector/__pycache__
+algae_monitoring_master/src/algae_monitoring_master/__pycache__

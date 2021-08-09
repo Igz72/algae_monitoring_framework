@@ -1,0 +1,8 @@
+#goal
+algae_monitoring_msgs/Coordinate3D goal
+---
+#result
+bool success
+---
+#feedback
+algae_monitoring_msgs/Coordinate3D position

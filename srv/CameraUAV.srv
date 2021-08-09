@@ -1,7 +1,0 @@
-sensor_msgs/Image image_sub
-float64 gps_x
-float64 gps_y
-float64 gps_z
----
-float64[] x
-float64[] y
