@@ -1,7 +1,4 @@
 #!/usr/bin/python3
-
 from algae_monitoring_master.master import master_node
-
-
 if __name__ == "__main__":
 	master_node()
