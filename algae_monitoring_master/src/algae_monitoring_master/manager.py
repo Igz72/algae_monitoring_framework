@@ -1,5 +1,6 @@
 import rospy
 
+from algae_monitoring_msgs.msg      import Coordinate3D
 from algae_monitoring_master.path   import Path
 
 
@@ -34,12 +35,7 @@ class Manager:
             return False
 
     def next_coverage_point(self):
-        if self.__coverage_path.complete():
-            return False
-
-        else:
-            self.__control_client.go_to(self.__coverage_path.coordinate())
-            return True
+        self.__control_client.go_to(self.__coverage_path.coordinate())
 
     def sample_planning(self):
         coordinates = self.__sample_client.path()
@@ -75,8 +71,8 @@ class Manager:
                 self.__state = 4
 
         elif self.__state == 2: # Emitir ordem de movimento para a próxima posição no coverage
-            if self.next_coverage_point():
-                self.__state = 3
+            self.next_coverage_point()
+            self.__state = 3
         
         elif self.__state == 3: # Solicitar o caminho para fotografar as algas
             rospy.loginfo("Solicitando o caminho para fotografar as algas")
