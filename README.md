@@ -58,8 +58,8 @@ As mensagens, serviços e ações foram criados no pacote `algae_monitoring_msgs
 ### Criação de nós e módulos em Python
 A configuração dos pacotes para utilizar código Python foi feita com base no tutorial [Installing Python scripts and modules](http://docs.ros.org/en/kinetic/api/catkin/html/howto/format2/installing_python.html).
 
-### Nós
+#### Nós
 Para a criação de nós, a pasta `scripts` foi adicionada aos pacotes. A documentação sugere que os nós contenham pouco código, e que as implementações sejam importadas dos módulos. Além disso, para que sejam instalados, o nome dos arquivos devem ser adicionados na função `catkin_install_python()` no `CMakeList.txt`.
 
-### Módulos
+#### Módulos
 Para a criação de módulos, a pasta `src/nome_do_pacote` foi adicionada aos pacotes. Nessa pasta foi adicionado o arquivo vazio `__init__.py`. Além disso, para que essa pasta seja reconhecida, o arquivo `setup.py` foi adicionado ao pacotes indicando esse endereço, e a função `catkin_python_setup()` foi acrescentada ao `CMakeList.txt`.
