@@ -62,4 +62,4 @@ A configuração dos pacotes para utilizar código Python foi feita com base no 
 Para a criação de nós, a pasta `scripts` foi adicionada aos pacotes. A documentação sugere que os nós contenham pouco código, e que as implementações sejam importadas dos módulos. Além disso, para que sejam instalados, o nome dos arquivos devem ser adicionados na função `catkin_install_python()` no `CMakeList.txt`.
 
 #### Módulos
-Para a criação de módulos, a pasta `src/nome_do_pacote` foi adicionada aos pacotes. Nessa pasta foi adicionado o arquivo vazio `__init__.py`. Além disso, para que essa pasta seja reconhecida, o arquivo `setup.py` foi adicionado ao pacotes indicando esse endereço, e a função `catkin_python_setup()` foi acrescentada ao `CMakeList.txt`.
+Para a criação de módulos, a pasta `src/nome_do_pacote` foi adicionada aos pacotes. Nessa pasta foi adicionado o arquivo vazio `__init__.py`. Além disso, para que essa pasta seja reconhecida, o arquivo `setup.py` foi adicionado aos pacotes indicando esse endereço, e a função `catkin_python_setup()` foi acrescentada ao `CMakeList.txt`.
