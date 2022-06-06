@@ -49,7 +49,8 @@ Os pacotes foram criados de acordo com o tutorial [Creating a ROS Package](http:
 	catkin_create_pkg algae_monitoring_master algae_monitoring_msgs actionlib_msgs
 
 ### Criação de mensagens, serviços e ações
-As mensagens, serviços e ações foram criados no pacote `algae_monitoring_msgs`, seguindo os tutoriais [Creating a ROS msg and srv](http://wiki.ros.org/ROS/Tutorials/CreatingMsgAndSrv) e [ROS Create Custom Action](https://roboticsbackend.com/ros-create-custom-action/). As dependências necessárias foram incluídas nos arquivos `CMakeLists.txt` e `package.xml` durante a criação do pacote, sendo necessário apenas acrescentá-las na função `catkin_package(CATKIN_DEPENDS ...)` do `CMakeLists.txt`. Além disso, foram criadas as pastas `msg`, `srv` e `action`.
+As mensagens, serviços e ações foram criados no pacote `algae_monitoring_msgs`, seguindo os tutoriais [Creating a ROS msg and srv](http://wiki.ros.org/ROS/Tutorials/CreatingMsgAndSrv) e [ROS Create Custom Action](https://roboticsbackend.com/ros-create-custom-action/). As dependências necessárias foram incluídas nos arquivos `CMakeLists.txt` e `package.xml` durante a criação do pacote, sendo necessário apenas acrescentá-las na função `catkin_package(CATKIN_DEPENDS ...)` do `CMakeLists.txt`, e remover o pacote `message_runtime` da função `find_package()`, conforme indicado em [catkin_package(CATKIN_DEPENDS ...) vs. find_package(catkin REQUIRED COMPONENTS ...)
+](https://answers.ros.org/question/261002/catkin_packagecatkin_depends-vs-find_packagecatkin-required-components/). Além disso, foram criadas as pastas `msg`, `srv` e `action`:
 
 - Novas mensagens devem ser criadas em arquivos na pasta `msg`. O nome de cada arquivo deve ser adicionado na função `add_message_files()` do `CMakeLists.txt`.
 - Novos serviços devem ser criados em arquivos na pasta `srv`. O nome de cada arquivo deve ser adicionado na função `add_service_files()` do `CMakeLists.txt`.
