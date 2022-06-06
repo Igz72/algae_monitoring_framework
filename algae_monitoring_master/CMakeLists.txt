@@ -104,7 +104,7 @@ catkin_python_setup()
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES algae_monitoring_master
-#  CATKIN_DEPENDS algae_monitoring_msgs
+  CATKIN_DEPENDS actionlib_msgs algae_monitoring_msgs
 #  DEPENDS system_lib
 )
 
